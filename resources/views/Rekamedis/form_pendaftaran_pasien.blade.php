@@ -75,8 +75,9 @@
                             value="{{ $now }}">
                     </div>
                     <button type="button" class="btn btn-success float-right" onclick="simpanpendaftaran()"><i
-                        class="bi bi-floppy2-fill mr-1"></i>Daftar</button>
-                    <button type="button" class="btn btn-warning float-right mr-1" onclick="kembali()"><i class="bi bi-align-end mr-1"></i>Selesai</button>
+                            class="bi bi-floppy2-fill mr-1"></i>Daftar</button>
+                    <button type="button" class="btn btn-warning float-right mr-1" onclick="kembali()"><i
+                            class="bi bi-align-end mr-1"></i>Selesai</button>
 
                 </form>
             </div>
@@ -127,46 +128,60 @@
     }
 
     function simpanpendaftaran() {
-        var data = $('.formpendaftaran').serializeArray();
-        spinneron()
-        $.ajax({
-            async: true,
-            type: 'post',
-            dataType: 'json',
-            data: {
-                _token: "{{ csrf_token() }}",
-                data: JSON.stringify(data),
-            },
-            url: '<?= route('simpanpendaftaran') ?>',
-            error: function(data) {
-                spinnerof()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ooops....',
-                    text: 'Sepertinya ada masalah......',
-                    footer: ''
-                })
-            },
-            success: function(data) {
-                if (data.kode == 500) {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oopss...',
-                        text: data.message,
-                        footer: ''
-                    })
-                } else {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'OK',
-                        text: data.message,
-                        footer: ''
-                    })
-                    ambilriwayatkunjungan()
-                }
+        Swal.fire({
+            title: "Apakah data pendaftaran sudah diisi dengan benar ?",
+            text: "Klik OK untuk simpan ...",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "OK"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data = $('.formpendaftaran').serializeArray();
+                spinneron()
+                $.ajax({
+                    async: true,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        data: JSON.stringify(data),
+                    },
+                    url: '<?= route('simpanpendaftaran') ?>',
+                    error: function(data) {
+                        spinnerof()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops....',
+                            text: 'Sepertinya ada masalah......',
+                            footer: ''
+                        })
+                    },
+                    success: function(data) {
+                        if (data.kode == 500) {
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oopss...',
+                                text: data.message,
+                                footer: ''
+                            })
+                        } else {
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'OK',
+                                text: data.message,
+                                footer: ''
+                            })
+                            ambilriwayatkunjungan()
+                            $('.formpendaftaran').find('input:text').val('');
+                        }
+                    }
+                });
             }
         });
+
     }
 </script>

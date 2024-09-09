@@ -47,13 +47,17 @@
                         <td>{{ $d->jumlah_layanan }}</td>
                         <td>{{ $d->tarif }}</td>
                         <td>{{ $d->total_tarif }}</td>
-                        <td>{{ $d->status_layanan_detail }}</td>
                         <td>
-                           @if($d->status_layanan_detail == 'CLS')
-                            Sudah dibayar
-                           @else
-                           <button class="btn btn-danger retur" iddetail="{{ $d->id_detail }}" data-dismiss="modal">retur</button>
-                           @endif
+                            @if ($d->status_layanan_detail == 'OPN')
+                                Belum dibayar
+                            @endif
+                        </td>
+                        <td>
+                            @if ($d->status_layanan_detail == 'CLS')
+                                Sudah dibayar
+                            @else
+                                <button type="button" class="btn btn-danger retur" iddetail="{{ $d->id_detail }}">retur</button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -63,38 +67,52 @@
 </div>
 <script>
     $(".retur").on('click', function(event) {
-        iddetail = $(this).attr('iddetail')
-        spinneron()
-        $.ajax({
-            async: true,
-            dataType: 'json',
-            type: 'post',
-            data: {
-                _token: "{{ csrf_token() }}",
-                iddetail
-            },
-            url: '<?= route('retur_tindakan') ?>',
-            error: function(data) {
-                spinnerof()
-            },
-            success: function(data) {
-                if (data.kode == 500) {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oopss...',
-                        text: data.message,
-                        footer: ''
-                    })
-                } else {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'OK',
-                        text: data.message,
-                        footer: ''
-                    })
-                }
+        Swal.fire({
+            title: "Anda yakin akan retur layanan ?",
+            text: "Klik OK untuk simpan ...",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "OK"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                iddetail = $(this).attr('iddetail')
+                spinneron()
+                $.ajax({
+                    async: true,
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        iddetail
+                    },
+                    url: '<?= route('retur_tindakan') ?>',
+                    error: function(data) {
+                        spinnerof()
+                    },
+                    success: function(data) {
+                        if (data.kode == 500) {
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oopss...',
+                                text: data.message,
+                                footer: ''
+                            })
+                        } else {
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'OK',
+                                text: data.message,
+                                footer: ''
+                            })
+                            $('#modalriwayatlayanan').modal('toggle');
+                        }
+                    }
+                });
             }
         });
     });

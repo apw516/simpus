@@ -182,6 +182,25 @@ class DokterController extends RekamedisController
             'data'
         ]));
     }
+    public function detail_riwayat_resep(request $request)
+    {
+        $id_kunjungan = $request->kodekunjungan;
+        $data_pelayanan = DB::select('select *,a.id as id_kunjungan,a.pic as pic_kunjungan,a.status as status_kunjungan,a.tgl_entry as tgl_entry_kunjungan from mt_kunjungan a
+        inner join mt_unit b on a.kode_unit = b.kode_unit
+        inner join user c on a.pic = c.id
+        inner join mt_pasien d on a.no_rm = d.no_rm
+        where a.id = ?', [$id_kunjungan]);
+
+        $data = db::select('select *,c.id as id_detail,b.id as id_header from mt_kunjungan a inner join ts_layanan_header b on a.id = b.kode_kunjungan inner join ts_layanan_detail c on b.id = c.id_header inner join mt_barang d on c.id_barang = d.id where a.id = ? and c.status_layanan_detail != ? and b.kode_unit = ?', [$id_kunjungan, 'RET','2004']);
+        // dd($data);
+        $mt_pegawai = DB::select('select * from mt_pegawai');
+        $mt_pegawai = DB::select('select * from mt_unit');
+        return view('Dokter.riwayat_resep', compact([
+            'data_pelayanan',
+            'id_kunjungan',
+            'data'
+        ]));
+    }
     public function retur_tindakan(Request $request)
     {
         $iddetail = $request->iddetail;

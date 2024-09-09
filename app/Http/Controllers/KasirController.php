@@ -83,10 +83,11 @@ class KasirController extends RekamedisController
                 $arrgtt[] = $dataSet2;
             }
         }
-
+        $kunjungan = db::select('select * from ts_layanan_header where id =? ',[$array_tagihan[0]['idheader']]);
         foreach($arrgtt as $ar){
             $kembalian = $ar['tu'] - $ar['gtt'];
             $kasir_header = [
+                'kode_kunjungan' => $kunjungan[0]->kode_kunjungan,
                 'jumlah_bayar' => $ar['tu'],
                 'jumlah_tagihan' => $ar['gtt'],
                 'kembalian' => $kembalian,
@@ -109,5 +110,36 @@ class KasirController extends RekamedisController
             Layanan_detail::where('id',$at['iddetail'])->update(['status_layanan_detail'=>'CLS']);
         }
        return view('Kasir.notif');
+    }
+    public function hitungulang(Request $request)
+    {
+        $data = json_decode($_POST['data'], true);
+        $kembalian = 0;
+        foreach ($data as $nama) {
+            $index = $nama['name'];
+            $value = $nama['value'];
+            $dataSet2[$index] = $value;
+            if ($index == 'tu') {
+                $arrgtt[] = $dataSet2;
+            }
+        }
+        $kembalian = $arrgtt[0]['tu'] - $arrgtt[0]['gtt'];
+        return view('Kasir.hitungakhir',compact([
+            'arrgtt','kembalian'
+        ]));
+    }
+    public function infoyangsudahdibayar(Request $request)
+    {
+        $kodekunjungan= $request->idkunjungan;
+        $kasirheader = db::select('select * from ts_transaksi_kasir_header where kode_kunjungan = ?',[$kodekunjungan]);
+        $kasirdetail = db::select('select *,b.id_header as idh,c.tarif as trfs from ts_transaksi_kasir_header a
+        inner join ts_transaksi_kasir_detail b on a.id = b.id_header
+        inner join ts_layanan_detail c on b.id_layanan_detail = c.id
+        left outer join mt_barang d on c.id_barang = d.id
+        left outer join mt_tarif e on c.id_tarif = e.id
+        where a.kode_kunjungan = ?',[$kodekunjungan]);
+        return view('Kasir.laporan_yang_sudah_dibayar',compact([
+            'kasirheader','kasirdetail'
+        ]));
     }
 }

@@ -5,7 +5,7 @@
         <label for="exampleInputEmail1">Pilih Tujuan</label>
         <input type="text" class="form-control" id="namapoli" name="namapoli"
             placeholder="Silahkan cari tujuan periksa ..." value="{{ $data_pelayanan[0]->nama_unit }}">
-        <input hidden type="text" class="form-control" id="kodepoli" name="kodepoli" value="{{ $data_pelayanan[0]->kode_unit }}">
+        <input hidden type="text" class="form-control" id="kodepoli" name="kodepoli" value="{{ $data_pelayanan[0]->unit_k }}">
         <input hidden type="text" class="form-control" id="kode_kunjungan" name="kode_kunjungan" value="{{ $id_kunjungan }}">
     </div>
     <div class="form-group">

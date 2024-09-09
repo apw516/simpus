@@ -21,8 +21,10 @@
                 <td>{{ $b->satuan_kecil }}</td>
                 <td>
                     <button class="btn btn-info btn-sm detailobat" data-toggle="modal" data-target="#modaldetailobat"
-                        idobat="{{ $b->id }}"><i class="bi bi-pencil-square"></i></button>
+                        idobat="{{ $b->id }}" namaobat="{{ $b->nama_barang }}"><i class="bi bi-pencil-square"></i></button>
                     <button class="btn btn-success btn-sm inputstok" data-toggle="modal" data-target="#modalinputstok"
+                        idobat="{{ $b->id }}" namaobat="{{ $b->nama_barang }}"><i class="bi bi-database-add"></i></button>
+                    <button class="btn btn-warning btn-sm infostok" data-toggle="modal" data-target="#modalinfostok"
                         idobat="{{ $b->id }}"><i class="bi bi-database-add"></i></button>
                 </td>
             </tr>
@@ -46,7 +48,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="simpanedit()">Simpan Edit</button>
             </div>
         </div>
     </div>
@@ -73,6 +75,27 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="modalinfostok" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Info Stok Obat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="v_info_stok_obat">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(function() {
@@ -85,13 +108,33 @@
             "ordering": false,
         })
     });
-    $(".inputstok").on('click', function(event) {
+    $(".detailobat").on('click', function(event) {
         idobat = $(this).attr('idobat')
+        namaobat = $(this).attr('namaobat')
         $.ajax({
             type: 'post',
             data: {
                 _token: "{{ csrf_token() }}",
-                idobat
+                idobat,namaobat
+            },
+            url: '<?= route('ambil_detail_obat') ?>',
+            error: function(response) {
+                spinnerof()
+            },
+            success: function(response) {
+                spinnerof()
+                $('.v_detail_obat').html(response);
+            }
+        });
+    });
+    $(".inputstok").on('click', function(event) {
+        idobat = $(this).attr('idobat')
+        namaobat = $(this).attr('namaobat')
+        $.ajax({
+            type: 'post',
+            data: {
+                _token: "{{ csrf_token() }}",
+                idobat,namaobat
             },
             url: '<?= route('ambil_form_stok_obat') ?>',
             error: function(response) {
@@ -100,6 +143,24 @@
             success: function(response) {
                 spinnerof()
                 $('.v_form_stok_obat').html(response);
+            }
+        });
+    });
+    $(".infostok").on('click', function(event) {
+        idobat = $(this).attr('idobat')
+        $.ajax({
+            type: 'post',
+            data: {
+                _token: "{{ csrf_token() }}",
+                idobat
+            },
+            url: '<?= route('info_stok_obat') ?>',
+            error: function(response) {
+                spinnerof()
+            },
+            success: function(response) {
+                spinnerof()
+                $('.v_info_stok_obat').html(response);
             }
         });
     });
@@ -142,6 +203,50 @@
                         text: data.message,
                         footer: ''
                     })
+                }
+            }
+        });
+    }
+    function simpanedit() {
+        var data = $('.formeditobat').serializeArray();
+        spinneron()
+        $.ajax({
+            async: true,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                _token: "{{ csrf_token() }}",
+                data: JSON.stringify(data),
+            },
+            url: '<?= route('simpaneditbarang') ?>',
+            error: function(data) {
+                spinnerof()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops....',
+                    text: 'Sepertinya ada masalah......',
+                    footer: ''
+                })
+            },
+            success: function(data) {
+                if (data.kode == 500) {
+                    spinnerof()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oopss...',
+                        text: data.message,
+                        footer: ''
+                    })
+                } else {
+                    spinnerof()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OK',
+                        text: data.message,
+                        footer: ''
+                    })
+
+                    location.reload()
                 }
             }
         });

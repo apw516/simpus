@@ -99,7 +99,7 @@
           </li>
           <li class="nav-header">Farmasi</li>
           <li class="nav-item">
-            <a href="{{ route('masteruser')}}" class="nav-link @if($menu == '') active @endif">
+            <a href="{{ route('masterorder')}}" class="nav-link @if($menu == 'masterorder') active @endif">
               <i class="nav-icon far fa-image"></i>
               <p>
                 Data Order Farmasi

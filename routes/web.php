@@ -66,6 +66,7 @@ Route::get('/pendaftaran', [RekamedisController::class, 'index_pendaftaran'])->m
 Route::get('/masterpasien', [RekamedisController::class, 'masterpasien'])->middleware('auth')->name('masterpasien');
 Route::get('/riwayatpelayanan', [RekamedisController::class, 'index_riwayat_pelayanan'])->middleware('auth')->name('riwayatpelayanan');
 Route::post('/simpanpasienbaru', [RekamedisController::class, 'simpanpasienbaru'])->middleware('auth')->name('simpanpasienbaru');
+Route::post('/simpaneditpasien', [RekamedisController::class, 'simpaneditpasien'])->middleware('auth')->name('simpaneditpasien');
 Route::post('/caripasien', [RekamedisController::class, 'caripasien'])->middleware('auth')->name('caripasien');
 Route::post('/mastercaripasien', [RekamedisController::class, 'mastercaripasien'])->middleware('auth')->name('mastercaripasien');
 Route::post('/ambilformpendaftaran', [RekamedisController::class, 'ambilformpendaftaran'])->middleware('auth')->name('ambilformpendaftaran');
@@ -76,6 +77,8 @@ Route::get('caridokter', [RekamedisController::class, 'caridokter'])->name('cari
 Route::post('/formeditkunjungan', [RekamedisController::class, 'formeditkunjungan'])->middleware('auth')->name('formeditkunjungan');
 Route::post('/simpaneditkunjungan', [RekamedisController::class, 'simpaneditkunjungan'])->middleware('auth')->name('simpaneditkunjungan');
 Route::post('/detailkunjungan', [RekamedisController::class, 'detailkunjungan'])->middleware('auth')->name('detailkunjungan');
+Route::post('/ambildetailpasien', [RekamedisController::class, 'ambildetailpasien'])->middleware('auth')->name('ambildetailpasien');
+Route::post('/ambilberkaserm', [RekamedisController::class, 'ambilberkaserm'])->middleware('auth')->name('ambilberkaserm');
 
 //ERM
 Route::get('/indexdokter', [DokterController::class, 'indexdokter'])->middleware('auth')->name('indexdokter');
@@ -84,6 +87,7 @@ Route::post('/ambil_index_erm', [DokterController::class, 'ambil_index_erm'])->m
 Route::post('/ambilriwayatkunjungan', [DokterController::class, 'ambilriwayatkunjungan'])->middleware('auth')->name('ambilriwayatkunjungan');
 Route::post('/simpanpemeriksaandokter', [DokterController::class, 'simpanpemeriksaandokter'])->middleware('auth')->name('simpanpemeriksaandokter');
 Route::post('/detail_riwayat_layanan', [DokterController::class, 'detail_riwayat_layanan'])->middleware('auth')->name('detail_riwayat_layanan');
+Route::post('/detail_riwayat_resep', [DokterController::class, 'detail_riwayat_resep'])->middleware('auth')->name('detail_riwayat_resep');
 Route::post('/retur_tindakan', [DokterController::class, 'retur_tindakan'])->middleware('auth')->name('retur_tindakan');
 
 
@@ -93,12 +97,21 @@ Route::post('/caripasienkasir', [KasirController::class, 'caripasienkasir'])->mi
 Route::post('/ambil_detail_pembayaran', [KasirController::class, 'ambil_detail_pembayaran'])->middleware('auth')->name('ambil_detail_pembayaran');
 Route::post('/ambil_tagihan_detail', [KasirController::class, 'ambil_tagihan_detail'])->middleware('auth')->name('ambil_tagihan_detail');
 Route::post('/hitungpembayaran', [KasirController::class, 'hitungpembayaran'])->middleware('auth')->name('hitungpembayaran');
+Route::post('/hitungulang', [KasirController::class, 'hitungulang'])->middleware('auth')->name('hitungulang');
 Route::post('/bayartagihan', [KasirController::class, 'bayartagihan'])->middleware('auth')->name('bayartagihan');
+Route::post('/infoyangsudahdibayar', [KasirController::class, 'infoyangsudahdibayar'])->middleware('auth')->name('infoyangsudahdibayar');
 
 
 //farmasi
 Route::get('/masterobat', [FarmasiController::class, 'indexmasterobat'])->middleware('auth')->name('masterobat');
+Route::get('/masterorder', [FarmasiController::class, 'indexmasterorder'])->middleware('auth')->name('masterorder');
 Route::post('/ambilmasterbarang', [FarmasiController::class, 'ambilmasterbarang'])->middleware('auth')->name('ambilmasterbarang');
 Route::post('/simpanobat', [FarmasiController::class, 'simpanobat'])->middleware('auth')->name('simpanobat');
+Route::post('/simpaneditbarang', [FarmasiController::class, 'simpaneditbarang'])->middleware('auth')->name('simpaneditbarang');
+Route::post('/info_stok_obat', [FarmasiController::class, 'info_stok_obat'])->middleware('auth')->name('info_stok_obat');
 Route::post('/ambil_form_stok_obat', [FarmasiController::class, 'ambil_form_stok_obat'])->middleware('auth')->name('ambil_form_stok_obat');
 Route::post('/simpastok', [FarmasiController::class, 'simpastok'])->middleware('auth')->name('simpastok');
+Route::post('/caripasienorder', [FarmasiController::class, 'caripasienorder'])->middleware('auth')->name('caripasienorder');
+Route::post('/ambil_data_order', [FarmasiController::class, 'ambil_data_order'])->middleware('auth')->name('ambil_data_order');
+Route::post('/simpanlayananorder', [FarmasiController::class, 'simpanlayananorder'])->middleware('auth')->name('simpanlayananorder');
+Route::post('/ambil_detail_obat', [FarmasiController::class, 'ambil_detail_obat'])->middleware('auth')->name('ambil_detail_obat');

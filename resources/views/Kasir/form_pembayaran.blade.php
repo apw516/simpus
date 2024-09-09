@@ -21,12 +21,17 @@
                                 <td>{{ $d->jumlah_layanan }}</td>
                                 <td>{{ $d->tarif_2 }}</td>
                                 <td>{{ $d->total_tarif }}</td>
-                                <td>@if($d->status_layanan == 2)Sudah dibayar @endif</td>
+                                <td>
+                                    @if ($d->status_layanan == 2)
+                                        Sudah dibayar
+                                    @endif
+                                </td>
                                 <td>{{ $d->status_layanan_detail }}</td>
                                 <td><button class="btn btn-success btn-sm pilihtagihan" iddetail="{{ $d->id_detail }}"
                                         id_header="{{ $d->id_header }}" nama_tarif="{{ $d->nama_tarif }}"
-                                        tarif="{{ $d->tarif }}" grandtotal="{{ $d->total_tarif }}"
-                                        qty="{{ $d->jumlah_layanan }}"><i class="bi bi-check2-square"></i></button>
+                                        nama_barang = "{{ $d->nama_barang }}" tarif="{{ $d->tarif }}"
+                                        grandtotal="{{ $d->total_tarif }}" qty="{{ $d->jumlah_layanan }}"><i
+                                            class="bi bi-check2-square"></i></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -77,13 +82,14 @@
         iddetail = $(this).attr('iddetail')
         id_header = $(this).attr('id_header')
         nama_tarif = $(this).attr('nama_tarif')
+        nama_barang = $(this).attr('nama_barang')
         tarif = $(this).attr('tarif')
         grandtotal = $(this).attr('grandtotal')
         qty = $(this).attr('qty')
         var wrapper = $(".input_tagihan");
         $(wrapper).append(
             '<div class="form-row text-xs"><div class="form-group col-md-3"><label for="">Nama Tarif / Tindakan</label><input readonly type="" class="form-control form-control-sm text-xs edit_field" id="" name="namatarif" value="' +
-            nama_tarif +
+            nama_tarif + nama_barang +
             '"><input hidden readonly type="" class="form-control form-control-sm" id="" name="idheader" value="' +
             id_header +
             '"><input hidden readonly type="" class="form-control form-control-sm" id="" name="iddetail" value="' +
@@ -128,19 +134,17 @@
             }
         });
     }
-    function bayar()
-    {
-        var data2 = $('.form_tagihannya').serializeArray();
+
+    function bayar() {
         var data = $('.formgtt').serializeArray();
         spinneron()
         $.ajax({
             type: 'post',
             data: {
                 _token: "{{ csrf_token() }}",
-                data: JSON.stringify(data),
-                data2: JSON.stringify(data2),
+                data: JSON.stringify(data)
             },
-            url: '<?= route('bayartagihan') ?>',
+            url: '<?= route('hitungulang') ?>',
             error: function(response) {
                 spinnerof()
                 Swal.fire({
@@ -152,8 +156,48 @@
             },
             success: function(response) {
                 spinnerof()
-                $('.formnotif').html(response);
+                $('.v_total_bayar').html(response);
             }
+        });
+    }
+
+    function bayar2() {
+        Swal.fire({
+            title: "Tagihan akan dibayar ? pastikan total tagihan, uang bayar, dan kembalian sudah benar ...!",
+            text: "Klik cancel untuk batal ...",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Bayar!"
+        }).then((result) => {
+            var data2 = $('.form_tagihannya').serializeArray();
+            var data = $('.formgtt').serializeArray();
+            spinneron()
+            $.ajax({
+                type: 'post',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    data: JSON.stringify(data),
+                    data2: JSON.stringify(data2),
+                },
+                url: '<?= route('bayartagihan') ?>',
+                error: function(response) {
+                    spinnerof()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ooops....',
+                        text: 'Sepertinya ada masalah......',
+                        footer: ''
+                    })
+                },
+                success: function(response) {
+                    spinnerof()
+                    $('#modalpembayaran').modal('toggle');
+                    $('.btnbayar').attr("disabled",true)
+                    $('.formnotif').html(response);
+                }
+            });
         });
     }
 </script>

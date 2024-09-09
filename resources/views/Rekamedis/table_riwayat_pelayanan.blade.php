@@ -83,13 +83,16 @@
 <script>
     $(function() {
         $("#tableriwayatpelayanan").DataTable({
+            "title": 'Riwayat Pelayan Pasien',
             "responsive": false,
             "lengthChange": false,
             "autoWidth": true,
             "pageLength": 8,
             "searching": true,
             "ordering": false,
-        })
+            "dom": 'Bfrtip',
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)')
     });
     $(".editkunjungan").on('click', function(event) {
         kodekunjungan = $(this).attr('kodekunjungan')
@@ -130,47 +133,46 @@
         });
     });
 
-    function simpaneditkunjungan()
-    {
+    function simpaneditkunjungan() {
         var data = $('.formeditkunjungan').serializeArray();
-            spinneron()
-            $.ajax({
-                async: true,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    data: JSON.stringify(data),
-                },
-                url: '<?= route('simpaneditkunjungan') ?>',
-                error: function(data) {
+        spinneron()
+        $.ajax({
+            async: true,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                _token: "{{ csrf_token() }}",
+                data: JSON.stringify(data),
+            },
+            url: '<?= route('simpaneditkunjungan') ?>',
+            error: function(data) {
+                spinnerof()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops....',
+                    text: 'Sepertinya ada masalah......',
+                    footer: ''
+                })
+            },
+            success: function(data) {
+                if (data.kode == 500) {
                     spinnerof()
                     Swal.fire({
                         icon: 'error',
-                        title: 'Ooops....',
-                        text: 'Sepertinya ada masalah......',
+                        title: 'Oopss...',
+                        text: data.message,
                         footer: ''
                     })
-                },
-                success: function(data) {
-                    if (data.kode == 500) {
-                        spinnerof()
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oopss...',
-                            text: data.message,
-                            footer: ''
-                        })
-                    } else {
-                        spinnerof()
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'OK',
-                            text: data.message,
-                            footer: ''
-                        })
-                        location.reload()
-                    }
+                } else {
+                    spinnerof()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OK',
+                        text: data.message,
+                        footer: ''
+                    })
+                    location.reload()
                 }
-            });
+            }
+        });
     }

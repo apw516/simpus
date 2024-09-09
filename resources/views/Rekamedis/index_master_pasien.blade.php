@@ -14,7 +14,8 @@
             <div class="v1">
                 <button class="btn btn-success" data-toggle="modal" data-target="#modalpasienbaru"><i
                         class="bi bi-clipboard2-plus mr-2"></i>Pasien Baru</button>
-                <a class="btn btn-info" href="{{ route('riwayatpelayanan')}}" ><i class="bi bi-info-circle mr-2"></i>Riwayat Pelayanan</a>
+                <a class="btn btn-info" href="{{ route('riwayatpelayanan') }}"><i class="bi bi-info-circle mr-2"></i>Riwayat
+                    Pelayanan</a>
                 <div class="row mt-3">
                     <div class="col-md-2">
                         <div class="form-group">
@@ -72,17 +73,17 @@
                     <form class="formpasienbaru">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nomor Identitas</label>
-                            <input type="email" class="form-control" id="nomoridentitas" name="nomoridentitas"
+                            <input type="text" class="form-control" id="nomoridentitas" name="nomoridentitas"
                                 aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nomor Telepon</label>
-                            <input type="email" class="form-control" id="nomorhp" name="nomorhp"
+                            <input type="text" class="form-control" id="nomorhp" name="nomorhp"
                                 aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nama Lengkap</label>
-                            <input type="email" class="form-control" id="namalengkap" name="namalengkap"
+                            <input type="text" class="form-control" id="namalengkap" name="namalengkap"
                                 aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
@@ -94,7 +95,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Tempat lahir</label>
-                            <input type="email" class="form-control" id="tempatlahir" name="tempatlahir"
+                            <input type="text" class="form-control" id="tempatlahir" name="tempatlahir"
                                 aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
@@ -119,48 +120,66 @@
         $(document).ready(function() {
             caripasien()
         })
+
         function simpanpasienbaru() {
             var data = $('.formpasienbaru').serializeArray();
-            spinneron()
-            $.ajax({
-                async: true,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    data: JSON.stringify(data),
-                },
-                url: '<?= route('simpanpasienbaru') ?>',
-                error: function(data) {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ooops....',
-                        text: 'Sepertinya ada masalah......',
-                        footer: ''
-                    })
-                },
-                success: function(data) {
-                    if (data.kode == 500) {
-                        spinnerof()
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oopss...',
-                            text: data.message,
-                            footer: ''
-                        })
-                    } else {
-                        spinnerof()
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'OK',
-                            text: data.message,
-                            footer: ''
-                        })
-                        location.reload()
-                    }
+            Swal.fire({
+                title: "Apakah data pasien sudah benar ?",
+                text: "Klik OK untuk simpan ...",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "OK"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    spinneron()
+                    $.ajax({
+                        async: true,
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            data: JSON.stringify(data),
+                        },
+                        url: '<?= route('simpanpasienbaru') ?>',
+                        error: function(data) {
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ooops....',
+                                text: 'Sepertinya ada masalah......',
+                                footer: ''
+                            })
+                        },
+                        success: function(data) {
+                            if (data.kode == 500) {
+                                spinnerof()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oopss...',
+                                    text: data.message,
+                                    footer: ''
+                                })
+                            } else {
+                                spinnerof()
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'OK',
+                                    text: data.message,
+                                    footer: ''
+                                })
+                                caripasien()
+                                $('.form-group').find('input:text').val('');
+                                $('.form-group').find('textarea:text').val('');
+                                $('.form-group').find('date:text').val('');
+                                $('#modalpasienbaru').modal('toggle');
+                            }
+                        }
+                    });
                 }
             });
+
         }
 
         function caripasien() {

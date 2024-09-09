@@ -82,10 +82,18 @@ class RekamedisController extends Controller
             'data_pelayanan'
         ]));
     }
+    public function ambildetailpasien(request $request)
+    {
+        $norm = $request->norm;
+        $mt_pasien = db::select('select * from mt_pasien where no_rm = ?',[$norm]);
+        return view('Rekamedis.form_edit_pasien', compact([
+            'mt_pasien'
+        ]));
+    }
     public function formeditkunjungan(request $request)
     {
         $id_kunjungan = $request->kodekunjungan;
-        $data_pelayanan = DB::select('select *,a.id as id_kunjungan,a.pic as pic_kunjungan,a.status as status_kunjungan,a.tgl_entry as tgl_entry_kunjungan from mt_kunjungan a
+        $data_pelayanan = DB::select('select *,a.kode_unit as unit_k,a.id as id_kunjungan,a.pic as pic_kunjungan,a.status as status_kunjungan,a.tgl_entry as tgl_entry_kunjungan from mt_kunjungan a
         inner join mt_unit b on a.kode_unit = b.kode_unit
         inner join user c on a.pic = c.id
         inner join mt_pasien d on a.no_rm = d.no_rm
@@ -272,6 +280,36 @@ class RekamedisController extends Controller
         echo json_encode($data);
         die;
     }
+    public function simpaneditpasien()
+    {
+        $data = json_decode($_POST['data'], true);
+        foreach ($data as $nama) {
+            $index = $nama['name'];
+            $value = $nama['value'];
+            $dataSet[$index] = $value;
+        }
+        $norm = $dataSet['norm'];
+        $data_pasien = [
+            'nama_pasien' => $dataSet['namalengkap'],
+            'jenis_kelamin' => $dataSet['jeniskelamin'],
+            'tempat_lahir' => $dataSet['tempatlahir'],
+            'tanggal_lahir' => $dataSet['tanggallahir'],
+            'nomor_identitas' => $dataSet['nomoridentitas'],
+            'nomor_telepon' => $dataSet['nomorhp'],
+            'alamat' => $dataSet['alamat'],
+            'pic' => auth()->user()->id,
+            'tgl_entry' => $this->get_now()
+        ];
+        Pasien::whereRaw('no_rm = ?', array($norm))->update($data_pasien);
+
+        Pasien::create($data_pasien);
+        $data = [
+            'kode' => 200,
+            'message' => 'Data berhasil disimpan !'
+        ];
+        echo json_encode($data);
+        die;
+    }
     public function get_rm()
     {
         $y = DB::select('SELECT MAX(RIGHT(no_rm,6)) AS kd_max FROM mt_pasien');
@@ -314,5 +352,20 @@ class RekamedisController extends Controller
         $date = $dt->toDateString();
         $now = $date;
         return $now;
+    }
+    public function ambilberkaserm(request $request)
+    {
+        $rm = $request->norm;
+        $kunjungan = db::select('select * from mt_kunjungan where no_rm = ? order by counter desc',[$rm]);
+        foreach($kunjungan as $k){
+            $header = db::select('select * from ts_layanan_header a inner join ts_layanan_detail b on a.id = b.id_header
+            left outer join mt_tarif c on b.id_tarif = c.id
+            left outer join mt_barang d on b.id_barang = d.id
+            where a.kode_kunjungan = ?',[$k->id]);
+        }
+        $mt_pasien = db::select('select * from mt_pasien where no_rm = ?',[$rm]);
+        return view('Rekamedis.berkas_erm',compact([
+            'kunjungan','mt_pasien','header'
+        ]));
     }
 }
