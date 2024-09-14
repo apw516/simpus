@@ -90,9 +90,7 @@
             "pageLength": 8,
             "searching": true,
             "ordering": false,
-            "dom": 'Bfrtip',
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)')
+        })
     });
     $(".editkunjungan").on('click', function(event) {
         kodekunjungan = $(this).attr('kodekunjungan')

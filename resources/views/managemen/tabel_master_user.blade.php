@@ -17,7 +17,7 @@
                 <td>{{ $u->id_pegawai }}</td>
                 <td>{{ $u->nama_akses }}</td>
                 <td>
-                    @if ($u->status == 1)
+                    @if ($u->status_user == '1')
                         Aktif
                     @else
                         Tidak aktif

@@ -142,4 +142,47 @@ class KasirController extends RekamedisController
             'kasirheader','kasirdetail'
         ]));
     }
+    public function cetaknota($id)
+    {
+        $kasirheader = db::select('select * from ts_transaksi_kasir_header where id = ?',[$id]);
+        $kasirdetail = db::select('select *,b.id_header as idh,c.tarif as trfs from ts_transaksi_kasir_header a
+        inner join ts_transaksi_kasir_detail b on a.id = b.id_header
+        inner join ts_layanan_detail c on b.id_layanan_detail = c.id
+        left outer join mt_barang d on c.id_barang = d.id
+        left outer join mt_tarif e on c.id_tarif = e.id
+        where a.id = ?',[$id]);
+       return view('Kasir.cetakankasir',compact([
+        'kasirheader','kasirdetail'
+       ]));
+    }
+    public function riwayatpembayaran()
+    {
+        $menu = 'kasir';
+        $date = $this->get_date();
+        return view('Kasir.Riwayatpembayaran',compact([
+            'menu','date'
+        ]));
+    }
+    public function caririwayatpembayaran(Request $request)
+    {
+        $awal = $request->awal;
+        $akhir = $request->akhir;
+        $data = db::select('SELECT * ,a.tgl_entry as tgl_resep FROM ts_transaksi_kasir_header a
+        INNER JOIN mt_kunjungan b ON a.`kode_kunjungan` = b.id
+        INNER JOIN mt_pasien c ON b.`no_rm` = c.no_rm
+        WHERE DATE(a.tgl_entry) BETWEEN ? AND ?',[$awal,$akhir]);
+        return view('Kasir.Riwayatpembayaran_tabel',compact([
+            'data'
+        ]));
+    }
+    public function cetakriwayatbayar($awal,$akhir)
+    {
+        $data = db::select('SELECT * ,a.tgl_entry as tgl_resep FROM ts_transaksi_kasir_header a
+        INNER JOIN mt_kunjungan b ON a.`kode_kunjungan` = b.id
+        INNER JOIN mt_pasien c ON b.`no_rm` = c.no_rm
+        WHERE DATE(a.tgl_entry) BETWEEN ? AND ?',[$awal,$akhir]);
+        return view('Kasir.cetakan_riwayat_bayar',compact([
+            'data','awal','akhir'
+        ]));
+    }
 }

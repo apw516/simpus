@@ -1,6 +1,6 @@
 @foreach ($kasirheader as $kh)
     <div class="card">
-        <div class="card-header">ID HEADER : {{ $kh->id }} | TANGGAL : {{ $kh->tgl_entry }}</div>
+        <div class="card-header">ID HEADER : {{ $kh->id }} | TANGGAL : {{ $kh->tgl_entry }} <button idkasir="{{ $kh->id }}" class="ml-1 mr-1 btn-xs btn btn-secondary" onclick="cetaknotakasir({{$kh->id}})">cetak</button></div>
         <div class="card-body">
             <table class="table table-sm table-bordered text-xs font-italic">
                 <thead>
@@ -39,3 +39,8 @@
         </div>
     </div>
 @endforeach
+<script>
+    function cetaknotakasir(id){
+            window.open('cetaknota/' + id);
+    }
+</script>

@@ -79,6 +79,8 @@ Route::post('/simpaneditkunjungan', [RekamedisController::class, 'simpaneditkunj
 Route::post('/detailkunjungan', [RekamedisController::class, 'detailkunjungan'])->middleware('auth')->name('detailkunjungan');
 Route::post('/ambildetailpasien', [RekamedisController::class, 'ambildetailpasien'])->middleware('auth')->name('ambildetailpasien');
 Route::post('/ambilberkaserm', [RekamedisController::class, 'ambilberkaserm'])->middleware('auth')->name('ambilberkaserm');
+Route::get('/cetakriwayatpelayanan/{awal}/{akhir}/{filter}', [RekamedisController::class, 'cetakriwayatpelayanan']); //formpasien_bpjs
+Route::get('/cetakberkaserm/{rm}', [RekamedisController::class, 'cetakberkaserm']); //formpasien_bpjs
 
 //ERM
 Route::get('/indexdokter', [DokterController::class, 'indexdokter'])->middleware('auth')->name('indexdokter');
@@ -93,6 +95,8 @@ Route::post('/retur_tindakan', [DokterController::class, 'retur_tindakan'])->mid
 
 //Kasir
 Route::get('/indexkasir', [KasirController::class, 'indexkasir'])->middleware('auth')->name('indexkasir');
+Route::get('/riwayatpembayaran', [KasirController::class, 'riwayatpembayaran'])->middleware('auth')->name('riwayatpembayaran');
+Route::post('/caririwayatpembayaran', [KasirController::class, 'caririwayatpembayaran'])->middleware('auth')->name('caririwayatpembayaran');
 Route::post('/caripasienkasir', [KasirController::class, 'caripasienkasir'])->middleware('auth')->name('caripasienkasir');
 Route::post('/ambil_detail_pembayaran', [KasirController::class, 'ambil_detail_pembayaran'])->middleware('auth')->name('ambil_detail_pembayaran');
 Route::post('/ambil_tagihan_detail', [KasirController::class, 'ambil_tagihan_detail'])->middleware('auth')->name('ambil_tagihan_detail');
@@ -100,9 +104,12 @@ Route::post('/hitungpembayaran', [KasirController::class, 'hitungpembayaran'])->
 Route::post('/hitungulang', [KasirController::class, 'hitungulang'])->middleware('auth')->name('hitungulang');
 Route::post('/bayartagihan', [KasirController::class, 'bayartagihan'])->middleware('auth')->name('bayartagihan');
 Route::post('/infoyangsudahdibayar', [KasirController::class, 'infoyangsudahdibayar'])->middleware('auth')->name('infoyangsudahdibayar');
+Route::get('/cetaknota/{id}', [KasirController::class, 'cetaknota']); //formpasien_bpjs
+Route::get('/cetakriwayatbayar/{awal}/{akhir}', [KasirController::class, 'cetakriwayatbayar']); //formpasien_bpjs
 
 
 //farmasi
+Route::get('/cetakresep/{id}', [FarmasiController::class, 'cetakresep']); //formpasien_bpjs
 Route::get('/masterobat', [FarmasiController::class, 'indexmasterobat'])->middleware('auth')->name('masterobat');
 Route::get('/masterorder', [FarmasiController::class, 'indexmasterorder'])->middleware('auth')->name('masterorder');
 Route::post('/ambilmasterbarang', [FarmasiController::class, 'ambilmasterbarang'])->middleware('auth')->name('ambilmasterbarang');

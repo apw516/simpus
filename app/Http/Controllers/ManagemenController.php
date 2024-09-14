@@ -55,7 +55,7 @@ class ManagemenController extends Controller
     }
     public function ambilmasteruser()
     {
-        $user = DB::select('select *,a.id as id_user from user a inner join mt_unit b on a.kode_unit = b.kode_unit
+        $user = DB::select('select *,a.id as id_user,a.status as status_user from user a inner join mt_unit b on a.kode_unit = b.kode_unit
         inner join mt_hak_akses c on a.hak_akses = c.kode_akses');
         return view('managemen.tabel_master_user', compact([
             'user'

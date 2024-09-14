@@ -37,6 +37,7 @@
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-success" style="margin-top:32px" onclick="tampilkandata()"><i class="bi bi-search mr-2"></i> Tampilkan</button>
+                        <button class="btn btn-warning" style="margin-top:32px" onclick="cetakriwayatpelayanan()"><i class="bi bi-printer mr-2"></i> Cetak</button>
                     </div>
                 </div>
             </div>
@@ -129,6 +130,12 @@
                     $('.v2').html(response);
                 }
             });
+        }
+        function cetakriwayatpelayanan(){
+            awal = $('#tanggalawal').val()
+            akhir = $('#tanggalakhir').val()
+            filter = $('#filter').val()
+            window.open('cetakriwayatpelayanan/' + awal + '/' + akhir + '/' + filter);
         }
     </script>
 @endsection

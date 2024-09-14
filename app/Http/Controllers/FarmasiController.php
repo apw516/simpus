@@ -43,6 +43,16 @@ class FarmasiController extends RekamedisController
             'data_kunjungan'
         ]));
     }
+    public function cetakresep($kodekunjungan)
+    {
+        $data_order = db::select('select *,a.id as idheader,b.id as iddetail from ts_layanan_header a
+        inner join ts_layanan_detail b on a.id = b.id_header
+        inner join mt_barang c on b.id_barang = c.id
+        where a.kode_kunjungan = ? and a.kode_unit = ? and a.status_layanan = ? and b.status_layanan_detail = ?', [$kodekunjungan, '2004', 2, 'CLS']);
+        return view('Farmasi.cetakan_resep', compact([
+            'data_order'
+        ]));
+    }
     public function ambil_data_order(Request $request)
     {
         $kode_kunjungan = $request->kodekunjungan;
@@ -51,7 +61,7 @@ class FarmasiController extends RekamedisController
         inner join mt_barang c on b.id_barang = c.id
         where a.kode_kunjungan = ? and a.kode_unit = ? and a.status_layanan = ? and b.status_layanan_detail = ?', [$kode_kunjungan, '2004', 2, 'CLS']);
         return view('Farmasi.detail_order_farmasi', compact([
-            'data_order'
+            'data_order','kode_kunjungan'
         ]));
     }
     public function ambilmasterbarang()

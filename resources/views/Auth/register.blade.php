@@ -5,7 +5,7 @@
     <title>Registrasi Akun</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/x-icon" href="{{ asset('public/IMG/logowaled.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('public/IMG/logo-puskesmas.png') }}">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('public/login-form-18/css/style.css') }}">
@@ -24,7 +24,7 @@
                 <div class="col-md-6 col-lg-5">
                     <div class="login-wrap p-4 p-md-5">
                         <div class=" d-flex align-items-center justify-content-center mb-4">
-                            <img width="200px" src="{{ asset('public/IMG/logo1.png') }}" alt="">
+                            <img width="200px" src="{{ asset('public/IMG/logo-puskesmas.png') }}" alt="">
                         </div>
                         <form action="{{ route('register') }}" class="login-form" method="POST">
                             @csrf
@@ -54,10 +54,12 @@
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Hak Akses</label>
                                 <select class="form-control" id="hak_akses" name="hak_akses">
-                                    <option value="1">Admin</option>
+                                    <option value="2">Admin</option>
                                     <option value="2">Pendaftaran</option>
                                     <option value="3">Perawat</option>
                                     <option value="4">Dokter</option>
+                                    <option value="5">Kasir</option>
+                                    <option value="6">Farmasi</option>
                                 </select>
                             </div>
                             <div class="form-group">

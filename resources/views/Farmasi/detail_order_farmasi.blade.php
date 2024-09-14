@@ -42,6 +42,7 @@
         </form>
     </div>
     <div class="card-footer">
+        <input hidden type="text" value="{{ $kode_kunjungan }}" id="kodekunjungan">
         <button class="btn btn-success float-right" onclick="layaniorderan()"><i class="bi bi-floppy mr-1 ml-1"></i>
             Simpan</button>
         <button class="btn btn-info float-right mr-1 ml-1" onclick="cetaknota()"><i class="bi bi-printer     mr-1 ml-1"></i>
@@ -112,6 +113,7 @@
     }
     function cetaknota()
     {
-
+        $kodekunjungan = $('#kodekunjungan').val()
+        window.open('cetakresep/' + kodekunjungan);
     }
 </script>
