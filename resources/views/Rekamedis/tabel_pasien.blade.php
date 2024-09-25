@@ -11,7 +11,7 @@
     <tbody>
         @foreach ($pasien as $p)
             <tr>
-                <td>{{ $p->NIK }}</td>
+                <td>{{ $p->nomor_identitas }}</td>
                 <td>{{ $p->no_rm }}</td>
                 <td>{{ $p->nama_pasien }}</td>
                 <td>
@@ -21,7 +21,7 @@
                         Perempuan
                     @endif
                 </td>
-                <td>{{ $p->TGL_LAHIR }}</td>
+                <td>{{ $p->tanggal_lahir }}</td>
                 <td>{{ $p->alamat }}</td>
                 <td>
                     <button norm="{{ $p->no_rm }}" class="btn btn-sm btn-success pilihpasien"><i

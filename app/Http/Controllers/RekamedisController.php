@@ -44,7 +44,7 @@ class RekamedisController extends Controller
         $nik = $request->nomorid;
         $nama = $request->nama;
         $alamat = $request->alamat;
-        $pasien = DB::select("CALL WSP_PANGGIL_DATAPASIEN('$rm','$nama','$alamat','$nik')");
+        $pasien = DB::select('select * from mt_pasien where no_rm LIKE ? and nomor_identitas LIKE ? and nama_pasien LIKE ? and alamat LIKE ? ORDER BY no_rm desc',['%'.$rm.'%','%'.$nik.'%','%'.$nama.'%','%'.$alamat.'%']);
         return view('Rekamedis.tabel_pasien', compact([
             'pasien'
         ]));
@@ -55,7 +55,7 @@ class RekamedisController extends Controller
         $nik = $request->nomorid;
         $nama = $request->nama;
         $alamat = $request->alamat;
-        $pasien = DB::select("CALL WSP_PANGGIL_DATAPASIEN('$rm','$nama','$alamat','$nik')");
+        $pasien = DB::select('select * from mt_pasien where no_rm LIKE ? and nomor_identitas LIKE ? and nama_pasien LIKE ? and alamat LIKE ? ORDER BY no_rm desc',['%'.$rm.'%','%'.$nik.'%','%'.$nama.'%','%'.$alamat.'%']);
         return view('Rekamedis.tabel_pasien_master', compact([
             'pasien'
         ]));
@@ -375,16 +375,20 @@ class RekamedisController extends Controller
     {
         $rm = $request->norm;
         $kunjungan = db::select('select * from mt_kunjungan where no_rm = ? order by counter desc',[$rm]);
-        foreach($kunjungan as $k){
-            $header = db::select('select * from ts_layanan_header a inner join ts_layanan_detail b on a.id = b.id_header
-            left outer join mt_tarif c on b.id_tarif = c.id
-            left outer join mt_barang d on b.id_barang = d.id
-            where a.kode_kunjungan = ?',[$k->id]);
+        if(count($kunjungan) > 0){
+            foreach($kunjungan as $k){
+                $header = db::select('select * from ts_layanan_header a inner join ts_layanan_detail b on a.id = b.id_header
+                left outer join mt_tarif c on b.id_tarif = c.id
+                left outer join mt_barang d on b.id_barang = d.id
+                where a.kode_kunjungan = ?',[$k->id]);
+            }
+            $mt_pasien = db::select('select * from mt_pasien where no_rm = ?',[$rm]);
+            return view('Rekamedis.berkas_erm',compact([
+                'kunjungan','mt_pasien','header','rm'
+            ]));
+        }else{
+            return view('Rekamedis.datanotfound');
         }
-        $mt_pasien = db::select('select * from mt_pasien where no_rm = ?',[$rm]);
-        return view('Rekamedis.berkas_erm',compact([
-            'kunjungan','mt_pasien','header','rm'
-        ]));
     }
     public function cetakberkaserm($rm)
     {
