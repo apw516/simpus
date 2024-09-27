@@ -26,14 +26,15 @@
                 <td>
                     <button class="btn btn-success bayar" idkunjungan={{ $k->id_kunjungan }}><i
                             class="bi bi-cash-coin"></i></button>
+                    <button class="btn btn-info ml-1 infoinvoice" idkunjungan={{ $k->id_kunjungan }}><i class="bi bi-receipt"></i></button>
                     <button class="btn btn-warning ml-1 infokasir" idkunjungan={{ $k->id_kunjungan }} data-toggle="modal"
                         data-target="#modalinfobayar"><i class="bi bi-info-square"></i></button>
+
                 </td>
             </tr>
         @endforeach
     </tbody>
 </table>
-
 <!-- Modal -->
 <div class="modal fade" id="modalinfobayar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -78,6 +79,28 @@
                 idkunjungan
             },
             url: '<?= route('ambil_detail_pembayaran') ?>',
+            error: function(response) {
+                spinnerof()
+            },
+            success: function(response) {
+                spinnerof()
+                $('.v1').attr('hidden', true)
+                $('.v2').removeAttr('hidden', true)
+                $('.v2').html(response);
+            }
+        });
+    });
+
+    $(".infoinvoice").on('click', function(event) {
+        idkunjungan = $(this).attr('idkunjungan')
+        spinneron()
+        $.ajax({
+            type: 'post',
+            data: {
+                _token: "{{ csrf_token() }}",
+                idkunjungan
+            },
+            url: '<?= route('ambil_detail_invoice') ?>',
             error: function(response) {
                 spinnerof()
             },

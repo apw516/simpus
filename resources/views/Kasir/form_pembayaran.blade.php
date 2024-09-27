@@ -29,7 +29,7 @@
                                 <td>{{ $d->status_layanan_detail }}</td>
                                 <td><button class="btn btn-success btn-sm pilihtagihan" iddetail="{{ $d->id_detail }}"
                                         id_header="{{ $d->id_header }}" nama_tarif="{{ $d->nama_tarif }}"
-                                        nama_barang = "{{ $d->nama_barang }}" tarif="{{ $d->tarif }}"
+                                        nama_barang = "{{ $d->nama_barang }}" tarif="{{ $d->tarif_2 }}"
                                         grandtotal="{{ $d->total_tarif }}" qty="{{ $d->jumlah_layanan }}"><i
                                             class="bi bi-check2-square"></i></button>
                                 </td>
@@ -54,6 +54,8 @@
             <div class="card-footer">
                 <button class="btn btn-warning float-right" onclick="hitungpembayaran()"><i
                         class="bi bi-arrow-counterclockwise mr-1"></i> Hitung</button>
+                <button class="btn btn-info float-right mr-1 ml-1" onclick="buatinvoice()"><i
+                        class="bi bi-receipt mr-1"></i>Buat Invoice</button>
             </div>
         </div>
         <div class="form_gt mt-2"></div>
@@ -171,33 +173,93 @@
             cancelButtonColor: "#d33",
             confirmButtonText: "Bayar!"
         }).then((result) => {
-            var data2 = $('.form_tagihannya').serializeArray();
-            var data = $('.formgtt').serializeArray();
-            spinneron()
-            $.ajax({
-                type: 'post',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    data: JSON.stringify(data),
-                    data2: JSON.stringify(data2),
-                },
-                url: '<?= route('bayartagihan') ?>',
-                error: function(response) {
-                    spinnerof()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ooops....',
-                        text: 'Sepertinya ada masalah......',
-                        footer: ''
-                    })
-                },
-                success: function(response) {
-                    spinnerof()
-                    $('#modalpembayaran').modal('toggle');
-                    $('.btnbayar').attr("disabled",true)
-                    $('.formnotif').html(response);
-                }
-            });
+            if (result.isConfirmed) {
+                var data2 = $('.form_tagihannya').serializeArray();
+                var data = $('.formgtt').serializeArray();
+                spinneron()
+                $.ajax({
+                    type: 'post',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        data: JSON.stringify(data),
+                        data2: JSON.stringify(data2),
+                    },
+                    url: '<?= route('bayartagihan') ?>',
+                    error: function(response) {
+                        spinnerof()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops....',
+                            text: 'Sepertinya ada masalah......',
+                            footer: ''
+                        })
+                    },
+                    success: function(response) {
+                        spinnerof()
+                        $('#modalpembayaran').modal('toggle');
+                        $('.btnbayar').attr("disabled", true)
+                        $('.formnotif').html(response);
+                    }
+                });
+            }
+        });
+    }
+
+    function buatinvoice() {
+        Swal.fire({
+            title: "Tagihan akan dibuatkan invoice ? pastikan data tagihan suudah benar ...!",
+            text: "Klik cancel untuk batal ...",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Oke, simpan"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data2 = $('.form_tagihannya').serializeArray();
+                spinneron()
+                $.ajax({
+                    async: true,
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        data: JSON.stringify(data2)
+                    },
+                    url: '<?= route('buatinvoice') ?>',
+                    error: function(data) {
+                        spinnerof()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops....',
+                            text: 'Sepertinya ada masalah......',
+                            footer: ''
+                        })
+                    },
+                    success: function(data) {
+                        spinnerof()
+                        if(data.kode == 200){
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'OK',
+                                text: data.message,
+                                footer: ''
+                            })
+                            window.open('cetakinvoice/' + data.kode_invoice);
+                            location.reload();
+                        }else{
+                            spinnerof()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops error!',
+                                text: 'Silahkan Coba Lahi ...',
+                                footer: ''
+                            })
+                        }
+                    }
+                });
+            }
         });
     }
 </script>

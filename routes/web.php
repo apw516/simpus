@@ -99,13 +99,19 @@ Route::get('/riwayatpembayaran', [KasirController::class, 'riwayatpembayaran'])-
 Route::post('/caririwayatpembayaran', [KasirController::class, 'caririwayatpembayaran'])->middleware('auth')->name('caririwayatpembayaran');
 Route::post('/caripasienkasir', [KasirController::class, 'caripasienkasir'])->middleware('auth')->name('caripasienkasir');
 Route::post('/ambil_detail_pembayaran', [KasirController::class, 'ambil_detail_pembayaran'])->middleware('auth')->name('ambil_detail_pembayaran');
+Route::post('/ambil_detail_invoice', [KasirController::class, 'ambil_detail_invoice'])->middleware('auth')->name('ambil_detail_invoice');
 Route::post('/ambil_tagihan_detail', [KasirController::class, 'ambil_tagihan_detail'])->middleware('auth')->name('ambil_tagihan_detail');
 Route::post('/hitungpembayaran', [KasirController::class, 'hitungpembayaran'])->middleware('auth')->name('hitungpembayaran');
 Route::post('/hitungulang', [KasirController::class, 'hitungulang'])->middleware('auth')->name('hitungulang');
 Route::post('/bayartagihan', [KasirController::class, 'bayartagihan'])->middleware('auth')->name('bayartagihan');
+Route::post('/buatinvoice', [KasirController::class, 'buatinvoice'])->middleware('auth')->name('buatinvoice');
+Route::post('/hapus_invoice', [KasirController::class, 'hapus_invoice'])->middleware('auth')->name('hapus_invoice');
+Route::post('/update_invoice', [KasirController::class, 'update_invoice'])->middleware('auth')->name('update_invoice');
+
 Route::post('/infoyangsudahdibayar', [KasirController::class, 'infoyangsudahdibayar'])->middleware('auth')->name('infoyangsudahdibayar');
 Route::get('/cetaknota/{id}', [KasirController::class, 'cetaknota']); //formpasien_bpjs
 Route::get('/cetakriwayatbayar/{awal}/{akhir}', [KasirController::class, 'cetakriwayatbayar']); //formpasien_bpjs
+Route::get('/cetakinvoice/{kodeinvoice}', [KasirController::class, 'Cetakinvoice']); //formpasien_bpjs
 
 
 //farmasi
